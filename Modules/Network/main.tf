@@ -7,7 +7,7 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_vpc" "AWS-3-tier-vpc" {
-  cidr_block = var.VPC_cider_block
+  cidr_block           = var.VPC_cider_block
   enable_dns_hostnames = true
 
   tags = {

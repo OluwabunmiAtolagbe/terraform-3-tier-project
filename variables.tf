@@ -2,6 +2,6 @@
 #   CHILD'S MODULE
 # --------------------------------------------------------------------------------------------------------------
 variable "password" {
-    type = string
-    description = "db password"
+  type        = string
+  description = "db password"
 }

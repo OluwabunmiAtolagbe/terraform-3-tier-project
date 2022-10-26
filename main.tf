@@ -2,6 +2,16 @@
 #   CHILD'S MODULE
 # --------------------------------------------------------------------------------------------------------------
 # cALLING Network module 
+locals {
+  secrets_value = jsondecode(data.aws_secretsmanager_secret_version.this.secret_string)
+}
+
+data "aws_secretsmanager_secret_version" "this" {
+  depends_on = [module.Database]
+  secret_id  = module.Database.secrets_version
+}
+
+
 data "aws_ami" "ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -37,15 +47,15 @@ module "networking" {
 
 
 module "application" {
+  # depends_on = [module.Database]
   source = "./Modules/Application" # git
 
   alb_name           = "albloadbalancer"
   cider_block_egress = ["0.0.0.0/0"]
-  domain_name        = "queenietech.com"
+  domain_name        = "queenietech.click"
   target_group       = "alb-target-group"
   alb_subnets_id = [module.networking.public-subnet-az-1a,
   module.networking.public-subnet-az-1b]
-
   instance_type             = "t2.micro"
   ami_id                    = data.aws_ami.ami.id
   ec2_subnet_id_AZ1         = module.networking.private-subnet-az-1a
@@ -53,16 +63,27 @@ module "application" {
   vpc_id                    = module.networking.vpc_id
   ec2_subnet_id_bastion     = module.networking.public-subnet-az-1b
   SG_name                   = "webapp_SG"
-  target_port               = 80
+  target_port               = 8080
   instance_count            = 3
-  subject_alternative_names = ["*.queenietech.com"]
-  user_data                 = file("./templates/app_tier.sh")
-  health_check_path         = "/app1/index.html"
+  subject_alternative_names = ["*.queenietech.click"]
+  # user_data                 = file("./templates/app_tier.sh") # 
+  user_data = templatefile("${path.root}/templates/registration_app.tmpl",
+    {
+      endpoint = local.secrets_value["endpoint"]
+      port     = local.secrets_value["port"]
+      db_name  = local.secrets_value["db_name"]
+      db_user  = local.secrets_value["username"]
+      password = local.secrets_value["password"]
+    }
+
+  )
+
+  health_check_path = "/login" # 
 }
 
 
 module "Database" {
-  source = "./Modules/Database"
+  source = "./Modules/Database" # "git::?//Modules/Database"
 
   db_name            = "project_database"
   db_SG_name         = "database_SG"
@@ -74,9 +95,9 @@ module "Database" {
   instance_class     = "db.t2.micro"
   username           = "admin"
   password           = var.password
-  vpc_id          = module.networking.vpc_id
-  security_groups = [module.application.app_security_group_id]
- 
+  vpc_id             = module.networking.vpc_id
+  security_groups    = [module.application.app_security_group_id] # 
+  component_name     = "registration-app"
 }
 
 

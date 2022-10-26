@@ -5,101 +5,101 @@
 
 variable "vpc_id" {
   description = "vpc id"
-  type = string
+  type        = string
 }
 
 variable "domain_name" {
-    description = "route53 domain name"
-    type = string
+  description = "route53 domain name"
+  type        = string
 }
 
 # aws_lb variables
 
 variable "alb_name" {
-    description = "app load balancer name"
-    type = string
+  description = "app load balancer name"
+  type        = string
 }
 
 variable "alb_subnets_id" {
   description = "alb subnets"
-  type = list
+  type        = list(any)
 }
 
 variable "target_group" {
-    type = string
-    description = "target group name"
+  type        = string
+  description = "target group name"
 }
 
 variable "instance_type" {
-  type = string
+  type        = string
   description = "instance type"
 }
 
 variable "ami_id" {
-    type = string
-    description = "AMI ID"
+  type        = string
+  description = "AMI ID"
 }
 
 variable "cider_block_egress" {
-  type = list(string)
+  type        = list(string)
   description = "any"
 }
 
 variable "ec2_subnet_id_AZ1" {
-  type = string
+  type        = string
   description = "ec2 subnet id"
 }
 
 variable "ec2_subnet_id_AZ2" {
-  type = string
+  type        = string
   description = "ec2 subnet id"
-  default = ""
+  default     = ""
 }
 
 variable "ec2_subnet_id_bastion" {
-  type = string
+  type        = string
   description = "bastion host subnet id"
-    default = ""
+  default     = ""
 }
 
 variable "SG_name" {
-  type = string
+  type        = string
   description = "EC2 security group"
 }
 
 variable "target_port" {
-  type = number
+  type        = number
   description = "target group attachment"
 }
 
 variable "instance_count" {
-  type = number
+  type        = number
   description = "ec2 instance count."
 }
 
 variable "sg_ports" {
-  type = map(any)
+  type        = map(any)
   description = "SG port"
-  default = {}
+  default     = {}
 }
 
 variable "user_data" {
-  type = string 
+  type        = string
   description = "ec2 user data "
 
 }
 
 variable "subject_alternative_names" {
-  type = list 
+  type        = list(any)
   description = "ec2 user data "
-  default = []
+  default     = []
 }
 
 
 variable "health_check_path" {
-  type = string 
+  type        = string
   description = "alb hhealth check pat"
- default = ""
+  default     = ""
 
 }
 

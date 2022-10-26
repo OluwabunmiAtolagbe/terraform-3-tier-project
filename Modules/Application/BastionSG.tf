@@ -5,9 +5,9 @@ resource "aws_security_group" "bastion_SG" {
   description = "enable ssh access on port 22"
   vpc_id      = var.vpc_id
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
     security_groups = [aws_security_group.app_lb_SG.id]
   }
 
@@ -27,16 +27,16 @@ resource "aws_security_group" "bastion_SG" {
 # EC2 security group
 
 resource "aws_security_group" "this" {
- name        = "ec2-sg"
- description = "Ingress for Vault"
- vpc_id      = var.vpc_id
+  name        = "ec2-sg"
+  description = "Ingress for Vault"
+  vpc_id      = var.vpc_id
 
   ingress {
-     from_port   = var.target_port
-     to_port     =  var.target_port
-     protocol    = "tcp"
-     cidr_blocks = var.cider_block_egress
-   }
+    from_port   = var.target_port
+    to_port     = var.target_port
+    protocol    = "tcp"
+    cidr_blocks = var.cider_block_egress
+  }
 
 
   egress {
@@ -46,8 +46,8 @@ resource "aws_security_group" "this" {
     cidr_blocks = var.cider_block_egress
   }
 
-   tags = {
+  tags = {
     Name = "EC2_SG"
   }
- }
+}
 
